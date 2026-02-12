@@ -28,7 +28,7 @@
 - 安全性：会话管理
 
 ## 文件结构
-
+```
 students-feedback/
 ├── app.py                 # 主应用文件
 ├── static/
@@ -42,6 +42,7 @@ students-feedback/
 │   ├── contact.html       # 联系页面
 │   └── index.html         # 用户反馈主页面
 └── README.md              # 项目说明文件
+```
 ```
 
 ## 安装与运行
