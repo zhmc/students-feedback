@@ -1,0 +1,111 @@
+<!-- templates/base.html -->
+<!DOCTYPE html>
+<html lang="zh-CN" data-bs-theme="light">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}学生意见反馈系统{% endblock %}</title>
+    <link rel="icon" href="{{ url_for('static', filename='images/favicon.ico') }}" type="image/x-icon">
+
+    <!-- Bootstrap CSS -->
+    <link href="{{ url_for('static', filename='css/bs.css') }}" rel="stylesheet">
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/bootstrap-icons/1.11.1/font/bootstrap-icons.min.css">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+    <header class="header">
+        <div class="container-fluid h-100">
+            <div class="d-flex align-items-center h-100">
+                <div class="header-logo">
+                    <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" height="50">
+                </div>
+                <h1 class="header-title ms-2 mb-0 fs-5">学生意见反馈系统</h1>
+                
+                <!-- 暗黑模式切换按钮 -->
+                <div class="ms-auto">
+                    <button class="btn btn-sm btn-outline-secondary rounded-circle" type="button" onclick="toggleDarkMode()" id="themeToggle">
+                        <i class="bi bi-circle-half"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-content">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div class="container">
+            {% for category, message in messages %}
+            <div class="alert alert-{{ 'danger' if category == 'error' else 'success' }} alert-dismissible fade show my-3"
+                role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="footer">
+        <div class="container-fluid h-100">
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-center h-100">
+                <div class="text-center text-md-start">
+                    <p class="mb-0">© 2025 柳城学生意见反馈系统 | 
+                        <a href="https://beian.miit.gov.cn/" target="_blank" class="footer-link">
+                            备案号：闽ICP备2024053695号
+                        </a> | 开发者：陈俊辉
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.2.3/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        // 切换暗黑模式
+        function toggleDarkMode() {
+            const html = document.documentElement;
+            const currentTheme = html.getAttribute('data-bs-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            html.setAttribute('data-bs-theme', newTheme);
+
+            // 保存用户偏好
+            localStorage.setItem('theme', newTheme);
+            
+            // 更新按钮图标
+            updateThemeIcon(newTheme);
+        }
+        
+        // 更新主题图标
+        function updateThemeIcon(theme) {
+            const themeToggle = document.getElementById('themeToggle');
+            const icon = themeToggle.querySelector('i');
+            if (theme === 'dark') {
+                icon.className = 'bi bi-brightness-high';
+            } else {
+                icon.className = 'bi bi-moon';
+            }
+        }
+
+        // 页面加载时应用保存的主题
+        document.addEventListener('DOMContentLoaded', function () {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-bs-theme', savedTheme);
+            updateThemeIcon(savedTheme);
+        });
+    </script>
+
+    {% block scripts %}{% endblock %}
+</body>
+
+</html>

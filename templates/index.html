@@ -1,0 +1,101 @@
+<!-- templates/index.html -->
+{% extends "base.html" %}
+
+{% block title %}提交反馈 - 学生意见反馈系统{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-4">
+                    <h2 class="text-center mb-4">提交意见反馈</h2>
+                    
+                    <form method="POST" action="{{ url_for('submit_feedback') }}">
+                        <div class="mb-4">
+                            <label for="feedback" class="form-label fw-medium">反馈内容 <span class="text-danger">*</span></label>
+                            <textarea class="form-control" id="feedback" name="feedback" rows="6" 
+                                      placeholder="请输入您的意见或建议..." required></textarea>
+                            <div class="form-text">请详细描述您的意见或建议</div>
+                        </div>
+                        
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-6">
+                                <label for="class_name" class="form-label fw-medium">班级 <span id="class-required">*</span></label>
+                                <input type="text" class="form-control" id="class_name" name="class_name" 
+                                       placeholder="例如：高三(1)班">
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <label for="student_name" class="form-label fw-medium">姓名</label>
+                                <input type="text" class="form-control" id="student_name" name="student_name" 
+                                       placeholder="请输入您的姓名">
+                            </div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="anonymous" name="anonymous">
+                                <label class="form-check-label" for="anonymous">
+                                    匿名提交
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary btn-lg rounded-pill">
+                                <i class="bi bi-send me-2"></i>提交反馈
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // 匿名选项变化时处理
+    const anonymousCheckbox = document.getElementById('anonymous');
+    const nameInput = document.getElementById('student_name');
+    const classInput = document.getElementById('class_name');
+    const classRequired = document.getElementById('class-required');
+    
+    anonymousCheckbox.addEventListener('change', function() {
+        if (this.checked) {
+            nameInput.value = '';
+            nameInput.disabled = true;
+            classInput.value = '';
+            classInput.disabled = true;
+            classRequired.style.display = 'none';
+        } else {
+            nameInput.disabled = false;
+            classInput.disabled = false;
+            classRequired.style.display = 'inline';
+        }
+    });
+    
+    // 表单提交前验证
+    document.querySelector('form').addEventListener('submit', function(e) {
+        const isAnonymous = anonymousCheckbox.checked;
+        const feedback = document.getElementById('feedback').value.trim();
+        const className = classInput.value.trim();
+        
+        if (!feedback) {
+            e.preventDefault();
+            alert('反馈内容不能为空');
+            return;
+        }
+        
+        if (!isAnonymous && !className) {
+            e.preventDefault();
+            alert('班级不能为空');
+            return;
+        }
+    });
+});
+</script>
+{% endblock %}
